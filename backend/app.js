@@ -68,6 +68,7 @@ app.use('/api/orders', require('./routes/orders'));
 app.use('/api/payment', require('./routes/payment'));
 app.use('/api/coupons', require('./routes/coupons'));
 app.use('/api/addresses', require('./routes/addresses'));
+app.use('/api/favorites', require('./routes/favorites'));
 app.use('/api/upload', require('./routes/upload'));
 
 // 健康检查
