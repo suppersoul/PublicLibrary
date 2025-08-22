@@ -1,0 +1,142 @@
+version: '3.8'
+
+services:
+  # MySQL数据库
+  mysql:
+    image: mysql:8.0
+    container_name: xiaojie_farm_mysql
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-xiaojie123456}
+      MYSQL_DATABASE: ${MYSQL_DATABASE:-xiaojie_farm}
+      MYSQL_USER: ${MYSQL_USER:-xiaojie}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD:-xiaojie123456}
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+      - ./mysql/init:/docker-entrypoint-initdb.d
+      - ./mysql/conf:/etc/mysql/conf.d
+    networks:
+      - xiaojie_network
+    command: --default-authentication-plugin=mysql_native_password
+
+  # Redis缓存
+  redis:
+    image: redis:6.0-alpine
+    container_name: xiaojie_farm_redis
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+      - ./redis/redis.conf:/usr/local/etc/redis/redis.conf
+    command: redis-server /usr/local/etc/redis/redis.conf
+    networks:
+      - xiaojie_network
+
+  # 后端API服务
+  backend:
+    build:
+      context: ../backend
+      dockerfile: Dockerfile
+    container_name: xiaojie_farm_backend
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=production
+      - DB_HOST=mysql
+      - DB_PORT=3306
+      - DB_USER=${MYSQL_USER:-xiaojie}
+      - DB_PASSWORD=${MYSQL_PASSWORD:-xiaojie123456}
+      - DB_NAME=${MYSQL_DATABASE:-xiaojie_farm}
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+      - JWT_SECRET=${JWT_SECRET:-xiaojie_jwt_secret_key}
+      - WECHAT_APPID=${WECHAT_APPID}
+      - WECHAT_SECRET=${WECHAT_SECRET}
+      - WECHAT_MCH_ID=${WECHAT_MCH_ID}
+      - WECHAT_API_KEY=${WECHAT_API_KEY}
+    volumes:
+      - ../backend:/app
+      - /app/node_modules
+      - ../backend/logs:/app/logs
+      - ../backend/uploads:/app/uploads
+    depends_on:
+      - mysql
+      - redis
+    networks:
+      - xiaojie_network
+
+  # 管理后台
+  admin:
+    build:
+      context: ../admin
+      dockerfile: Dockerfile
+    container_name: xiaojie_farm_admin
+    restart: unless-stopped
+    ports:
+      - "3001:3001"
+    environment:
+      - NODE_ENV=production
+      - API_BASE_URL=http://backend:3000/api
+      - JWT_SECRET=${JWT_SECRET:-xiaojie_jwt_secret_key}
+    volumes:
+      - ../admin:/app
+      - /app/node_modules
+    depends_on:
+      - backend
+    networks:
+      - xiaojie_network
+
+  # Nginx反向代理
+  nginx:
+    image: nginx:alpine
+    container_name: xiaojie_farm_nginx
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf
+      - ./nginx/conf.d:/etc/nginx/conf.d
+      - ./nginx/ssl:/etc/nginx/ssl
+      - ../backend/uploads:/var/www/uploads
+    depends_on:
+      - backend
+      - admin
+    networks:
+      - xiaojie_network
+
+  # 数据备份服务
+  backup:
+    image: mysql:8.0
+    container_name: xiaojie_farm_backup
+    restart: "no"
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-xiaojie123456}
+      MYSQL_DATABASE: ${MYSQL_DATABASE:-xiaojie_farm}
+      MYSQL_USER: ${MYSQL_USER:-xiaojie}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD:-xiaojie123456}
+    volumes:
+      - ./backup:/backup
+      - ../scripts/backup.sh:/backup.sh
+    depends_on:
+      - mysql
+    networks:
+      - xiaojie_network
+    command: sh -c "sleep 30 && /backup.sh"
+
+volumes:
+  mysql_data:
+    driver: local
+  redis_data:
+    driver: local
+
+networks:
+  xiaojie_network:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.20.0.0/16
