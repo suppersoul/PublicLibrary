@@ -1,0 +1,134 @@
+<!--支付页面-->
+<view class="payment-container">
+  <!-- 支付金额 -->
+  <view class="payment-amount">
+    <view class="amount-label">支付金额</view>
+    <view class="amount-value">
+      <text class="currency">￥</text>
+      <text class="price">{{amount}}</text>
+    </view>
+  </view>
+
+  <!-- 支付方式 -->
+  <view class="payment-methods">
+    <view class="section-title">选择支付方式</view>
+    
+    <view class="method-item" bind:tap="selectPaymentMethod" data-method="wechat">
+      <view class="method-info">
+        <image class="method-icon" src="/images/payment/wechat.png" mode="aspectFit"/>
+        <view class="method-details">
+          <text class="method-name">微信支付</text>
+          <text class="method-desc">推荐使用微信支付</text>
+        </view>
+      </view>
+      <view class="method-radio">
+        <view class="radio {{selectedMethod === 'wechat' ? 'checked' : ''}}"></view>
+      </view>
+    </view>
+
+    <view class="method-item" bind:tap="selectPaymentMethod" data-method="balance">
+      <view class="method-info">
+        <image class="method-icon" src="/images/payment/balance.png" mode="aspectFit"/>
+        <view class="method-details">
+          <text class="method-name">余额支付</text>
+          <text class="method-desc">可用余额：￥{{userBalance}}</text>
+        </view>
+      </view>
+      <view class="method-radio">
+        <view class="radio {{selectedMethod === 'balance' ? 'checked' : ''}}"></view>
+      </view>
+    </view>
+
+    <view class="method-item" bind:tap="selectPaymentMethod" data-method="alipay">
+      <view class="method-info">
+        <image class="method-icon" src="/images/payment/alipay.png" mode="aspectFit"/>
+        <view class="method-details">
+          <text class="method-name">支付宝</text>
+          <text class="method-desc">使用支付宝支付</text>
+        </view>
+      </view>
+      <view class="method-radio">
+        <view class="radio {{selectedMethod === 'alipay' ? 'checked' : ''}}"></view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 订单信息 -->
+  <view class="order-info">
+    <view class="section-title">订单信息</view>
+    <view class="info-item">
+      <text class="info-label">订单号</text>
+      <text class="info-value">{{orderNo}}</text>
+    </view>
+    <view class="info-item">
+      <text class="info-label">商品金额</text>
+      <text class="info-value">￥{{amount}}</text>
+    </view>
+    <view class="info-item">
+      <text class="info-label">支付金额</text>
+      <text class="info-value highlight">￥{{amount}}</text>
+    </view>
+  </view>
+
+  <!-- 支付按钮 -->
+  <view class="payment-actions">
+    <button 
+      class="pay-btn {{canPay ? 'active' : 'disabled'}}" 
+      bind:tap="confirmPayment"
+      disabled="{{!canPay}}"
+    >
+      立即支付
+    </button>
+  </view>
+
+  <!-- 支付提示 -->
+  <view class="payment-tips">
+    <view class="tip-item">
+      <text class="tip-icon">💡</text>
+      <text class="tip-text">支付完成后，订单将自动更新状态</text>
+    </view>
+    <view class="tip-item">
+      <text class="tip-icon">🔒</text>
+      <text class="tip-text">支付过程安全加密，请放心使用</text>
+    </view>
+  </view>
+</view>
+
+<!-- 支付确认弹窗 -->
+<view class="confirm-modal" wx:if="{{showConfirmModal}}" bind:tap="hideConfirmModal">
+  <view class="confirm-content" catch:tap="">
+    <view class="confirm-title">确认支付</view>
+    <view class="confirm-amount">
+      <text class="currency">￥</text>
+      <text class="price">{{amount}}</text>
+    </view>
+    <view class="confirm-method">
+      支付方式：{{getMethodText(selectedMethod)}}
+    </view>
+    <view class="confirm-actions">
+      <button class="cancel-btn" bind:tap="hideConfirmModal">取消</button>
+      <button class="confirm-btn" bind:tap="doPayment">确认支付</button>
+    </view>
+  </view>
+</view>
+
+<!-- 支付结果弹窗 -->
+<view class="result-modal" wx:if="{{showResultModal}}" bind:tap="hideResultModal">
+  <view class="result-content" catch:tap="">
+    <view class="result-icon {{paymentSuccess ? 'success' : 'error'}}">
+      {{paymentSuccess ? '✓' : '✗'}}
+    </view>
+    <view class="result-title">{{paymentSuccess ? '支付成功' : '支付失败'}}</view>
+    <view class="result-message">{{paymentSuccess ? '订单支付成功，商家将尽快为您发货' : resultMessage}}</view>
+    <view class="result-actions">
+      <button class="result-btn" bind:tap="hideResultModal">
+        {{paymentSuccess ? '查看订单' : '重新支付'}}
+      </button>
+    </view>
+  </view>
+</view>
+
+<!-- 加载状态 -->
+<view class="loading" wx:if="{{loading}}">
+  <text>支付中...</text>
+</view>
