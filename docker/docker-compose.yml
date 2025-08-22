@@ -1,0 +1,120 @@
+version: '3.8'
+
+services:
+  # 后端API服务
+  backend:
+    build:
+      context: ../backend
+      dockerfile: Dockerfile
+    container_name: farm-product-backend
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=production
+      - PORT=3000
+      - DB_HOST=mysql
+      - DB_PORT=3306
+      - DB_NAME=farm_product_db
+      - DB_USER=root
+      - DB_PASSWORD=your_mysql_password
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+    depends_on:
+      - mysql
+      - redis
+    volumes:
+      - ../backend/uploads:/app/uploads
+      - ../backend/logs:/app/logs
+    networks:
+      - farm-product-network
+
+  # MySQL数据库
+  mysql:
+    image: mysql:8.0
+    container_name: farm-product-mysql
+    restart: unless-stopped
+    ports:
+      - "3306:3306"
+    environment:
+      - MYSQL_ROOT_PASSWORD=your_mysql_password
+      - MYSQL_DATABASE=farm_product_db
+      - MYSQL_USER=farm_user
+      - MYSQL_PASSWORD=farm_password
+    volumes:
+      - mysql_data:/var/lib/mysql
+      - ../database/schema:/docker-entrypoint-initdb.d
+    command: --default-authentication-plugin=mysql_native_password
+    networks:
+      - farm-product-network
+
+  # Redis缓存
+  redis:
+    image: redis:6.0-alpine
+    container_name: farm-product-redis
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    command: redis-server --appendonly yes
+    networks:
+      - farm-product-network
+
+  # Nginx反向代理
+  nginx:
+    image: nginx:alpine
+    container_name: farm-product-nginx
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf
+      - ./ssl:/etc/nginx/ssl
+      - ../backend/uploads:/var/www/uploads
+    depends_on:
+      - backend
+    networks:
+      - farm-product-network
+
+  # 数据库管理工具（可选）
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    container_name: farm-product-phpmyadmin
+    restart: unless-stopped
+    ports:
+      - "8080:80"
+    environment:
+      - PMA_HOST=mysql
+      - PMA_PORT=3306
+      - PMA_USER=root
+      - PMA_PASSWORD=your_mysql_password
+    depends_on:
+      - mysql
+    networks:
+      - farm-product-network
+
+  # Redis管理工具（可选）
+  redis-commander:
+    image: rediscommander/redis-commander:latest
+    container_name: farm-product-redis-commander
+    restart: unless-stopped
+    ports:
+      - "8081:8081"
+    environment:
+      - REDIS_HOSTS=local:redis:6379
+    depends_on:
+      - redis
+    networks:
+      - farm-product-network
+
+volumes:
+  mysql_data:
+    driver: local
+  redis_data:
+    driver: local
+
+networks:
+  farm-product-network:
+    driver: bridge
