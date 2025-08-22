@@ -1,0 +1,396 @@
+/* pages/order/detail/detail.wxss */
+
+.order-detail-container {
+  background: #f5f5f5;
+  min-height: 100vh;
+  padding-bottom: 140rpx; /* 为底部按钮留出空间 */
+}
+
+/* 订单状态 */
+.status-section {
+  background: linear-gradient(135deg, #ff6b35 0%, #ffa366 100%);
+  padding: 60rpx 40rpx;
+  color: white;
+}
+
+.status-info {
+  display: flex;
+  align-items: center;
+}
+
+.status-icon {
+  font-size: 80rpx;
+  margin-right: 30rpx;
+}
+
+.status-text {
+  flex: 1;
+}
+
+.status-title {
+  display: block;
+  font-size: 36rpx;
+  font-weight: bold;
+  margin-bottom: 12rpx;
+}
+
+.status-desc {
+  font-size: 26rpx;
+  opacity: 0.9;
+  line-height: 1.4;
+}
+
+/* 通用区块样式 */
+.address-section,
+.products-section,
+.order-info-section,
+.price-section,
+.logistics-section,
+.payment-section {
+  background: white;
+  margin: 20rpx;
+  border-radius: 16rpx;
+  overflow: hidden;
+  box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.1);
+}
+
+.section-title {
+  font-size: 32rpx;
+  font-weight: bold;
+  color: #333;
+  padding: 30rpx 30rpx 20rpx;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+/* 收货地址 */
+.address-info {
+  padding: 30rpx;
+}
+
+.address-header {
+  display: flex;
+  align-items: center;
+  margin-bottom: 16rpx;
+}
+
+.receiver-name {
+  font-size: 32rpx;
+  font-weight: bold;
+  color: #333;
+  margin-right: 20rpx;
+}
+
+.receiver-phone {
+  font-size: 28rpx;
+  color: #666;
+}
+
+.address-detail {
+  font-size: 28rpx;
+  color: #333;
+  line-height: 1.4;
+}
+
+/* 商品信息 */
+.product-item {
+  display: flex;
+  padding: 30rpx;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.product-item:last-child {
+  border-bottom: none;
+}
+
+.product-image {
+  width: 120rpx;
+  height: 120rpx;
+  border-radius: 8rpx;
+  margin-right: 20rpx;
+  flex-shrink: 0;
+}
+
+.product-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.product-name {
+  font-size: 28rpx;
+  color: #333;
+  line-height: 1.4;
+  margin-bottom: 8rpx;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+}
+
+.product-spec {
+  font-size: 24rpx;
+  color: #999;
+  margin-bottom: 8rpx;
+}
+
+.product-price {
+  display: flex;
+  align-items: baseline;
+}
+
+.currency {
+  font-size: 22rpx;
+  color: #ff6b35;
+  font-weight: bold;
+}
+
+.price {
+  font-size: 28rpx;
+  color: #ff6b35;
+  font-weight: bold;
+  margin-left: 4rpx;
+}
+
+.quantity {
+  font-size: 24rpx;
+  color: #999;
+  margin-left: 16rpx;
+}
+
+/* 订单信息 */
+.info-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20rpx 30rpx;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.info-item:last-child {
+  border-bottom: none;
+}
+
+.info-label {
+  font-size: 28rpx;
+  color: #666;
+}
+
+.info-value {
+  font-size: 28rpx;
+  color: #333;
+  max-width: 400rpx;
+  text-align: right;
+  word-break: break-all;
+}
+
+/* 价格信息 */
+.price-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20rpx 30rpx;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.price-item:last-child {
+  border-bottom: none;
+}
+
+.price-label {
+  font-size: 28rpx;
+  color: #666;
+}
+
+.price-value {
+  font-size: 28rpx;
+  color: #333;
+}
+
+.price-item.total .price-value {
+  color: #ff6b35;
+  font-weight: bold;
+  font-size: 32rpx;
+}
+
+.price-divider {
+  height: 1px;
+  background: #f0f0f0;
+  margin: 0 30rpx;
+}
+
+/* 物流信息 */
+.logistics-info {
+  padding: 30rpx;
+}
+
+.logistics-item {
+  display: flex;
+  margin-bottom: 30rpx;
+}
+
+.logistics-item:last-child {
+  margin-bottom: 0;
+}
+
+.logistics-time {
+  width: 200rpx;
+  font-size: 24rpx;
+  color: #999;
+  flex-shrink: 0;
+}
+
+.logistics-content {
+  flex: 1;
+  display: flex;
+  align-items: flex-start;
+}
+
+.logistics-dot {
+  width: 16rpx;
+  height: 16rpx;
+  border-radius: 50%;
+  background: #e0e0e0;
+  margin: 8rpx 20rpx 0 0;
+  flex-shrink: 0;
+}
+
+.logistics-dot.active {
+  background: #ff6b35;
+}
+
+.logistics-text {
+  font-size: 28rpx;
+  color: #333;
+  line-height: 1.4;
+  flex: 1;
+}
+
+/* 底部操作栏 */
+.bottom-bar {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: white;
+  padding: 20rpx;
+  box-shadow: 0 -2rpx 10rpx rgba(0, 0, 0, 0.1);
+}
+
+.action-buttons {
+  display: flex;
+  gap: 20rpx;
+}
+
+.action-btn {
+  flex: 1;
+  height: 80rpx;
+  border-radius: 40rpx;
+  font-size: 28rpx;
+  border: 2rpx solid #e0e0e0;
+  background: white;
+  color: #666;
+}
+
+.action-btn.primary {
+  background: #ff6b35;
+  color: white;
+  border-color: #ff6b35;
+}
+
+.action-btn.cancel {
+  color: #999;
+  border-color: #e0e0e0;
+}
+
+/* 弹窗样式 */
+.cancel-modal, .delete-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.cancel-content, .delete-content {
+  background: white;
+  width: 600rpx;
+  border-radius: 16rpx;
+  padding: 40rpx;
+}
+
+.cancel-title, .delete-title {
+  font-size: 32rpx;
+  font-weight: bold;
+  color: #333;
+  text-align: center;
+  margin-bottom: 30rpx;
+}
+
+.cancel-reason {
+  margin-bottom: 30rpx;
+}
+
+.reason-label {
+  display: block;
+  font-size: 28rpx;
+  color: #333;
+  margin-bottom: 16rpx;
+}
+
+.reason-input {
+  width: 100%;
+  height: 120rpx;
+  border: 2rpx solid #e0e0e0;
+  border-radius: 8rpx;
+  padding: 20rpx;
+  font-size: 26rpx;
+  box-sizing: border-box;
+}
+
+.delete-message {
+  font-size: 28rpx;
+  color: #666;
+  text-align: center;
+  line-height: 1.5;
+  margin-bottom: 30rpx;
+}
+
+.cancel-actions, .delete-actions {
+  display: flex;
+  gap: 20rpx;
+}
+
+.cancel-btn, .delete-btn, .confirm-btn {
+  flex: 1;
+  height: 80rpx;
+  border-radius: 40rpx;
+  font-size: 28rpx;
+  border: none;
+}
+
+.cancel-btn, .delete-btn {
+  background: #f0f0f0;
+  color: #666;
+}
+
+.confirm-btn {
+  background: #ff6b35;
+  color: white;
+}
+
+/* 加载状态 */
+.loading {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 60vh;
+  font-size: 28rpx;
+  color: #666;
+}
