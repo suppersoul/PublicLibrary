@@ -1,0 +1,148 @@
+<!--购物车页面-->
+<view class="cart-container">
+  <!-- 购物车商品列表 -->
+  <view class="cart-content" wx:if="{{!loading && cartItems.length > 0}}">
+    <view class="cart-items">
+      <view class="cart-item" wx:for="{{cartItems}}" wx:key="id">
+        <!-- 选择框 -->
+        <checkbox-group bind:change="onItemCheck" data-index="{{index}}">
+          <checkbox class="item-checkbox" value="{{item.id}}" checked="{{item.checked}}"/>
+        </checkbox-group>
+        
+        <!-- 商品信息 -->
+        <view class="item-info" bind:tap="goToProduct" data-id="{{item.product_id}}">
+          <image class="item-image" src="{{item.product_image}}" mode="aspectFill"/>
+          <view class="item-details">
+            <view class="item-name">{{item.product_name}}</view>
+            <view class="item-spec" wx:if="{{item.spec_name}}">{{item.spec_name}}</view>
+            <view class="item-price">
+              <text class="currency">￥</text>
+              <text class="price">{{item.price}}</text>
+            </view>
+          </view>
+        </view>
+        
+        <!-- 数量控制和删除 -->
+        <view class="item-actions">
+          <view class="quantity-control">
+            <button 
+              class="quantity-btn decrease" 
+              bind:tap="decreaseQuantity" 
+              data-index="{{index}}"
+              disabled="{{item.quantity <= 1}}"
+            >-</button>
+            <input 
+              class="quantity-input" 
+              type="number" 
+              value="{{item.quantity}}" 
+              bind:input="onQuantityInput"
+              data-index="{{index}}"
+            />
+            <button 
+              class="quantity-btn increase" 
+              bind:tap="increaseQuantity" 
+              data-index="{{index}}"
+              disabled="{{item.quantity >= item.stock}}"
+            >+</button>
+          </view>
+          <button class="delete-btn" bind:tap="deleteItem" data-index="{{index}}">
+            <text class="delete-icon">🗑️</text>
+          </button>
+        </view>
+      </view>
+    </view>
+
+    <!-- 推荐商品 -->
+    <view class="recommend-section" wx:if="{{recommendProducts.length > 0}}">
+      <view class="recommend-title">
+        <text>为你推荐</text>
+      </view>
+      <scroll-view class="recommend-list" scroll-x="{{true}}">
+        <view class="recommend-item" wx:for="{{recommendProducts}}" wx:key="id" bind:tap="goToProduct" data-id="{{item.id}}">
+          <image class="recommend-image" src="{{item.image}}" mode="aspectFill"/>
+          <view class="recommend-name">{{item.name}}</view>
+          <view class="recommend-price">
+            <text class="currency">￥</text>
+            <text class="price">{{item.price}}</text>
+          </view>
+          <button class="add-cart-btn" bind:tap="addRecommendToCart" data-id="{{item.id}}" catch:tap="">
+            加入购物车
+          </button>
+        </view>
+      </scroll-view>
+    </view>
+  </view>
+
+  <!-- 空购物车状态 -->
+  <view class="empty-cart" wx:if="{{!loading && cartItems.length === 0}}">
+    <image class="empty-image" src="/images/empty-cart.png" mode="aspectFit"/>
+    <text class="empty-text">购物车空空如也</text>
+    <text class="empty-desc">快去挑选心仪的商品吧</text>
+    <button class="go-shopping-btn" bind:tap="goToIndex">去逛逛</button>
+  </view>
+
+  <!-- 加载状态 -->
+  <view class="loading" wx:if="{{loading}}">
+    <text>加载中...</text>
+  </view>
+</view>
+
+<!-- 底部结算栏 -->
+<view class="bottom-bar" wx:if="{{!loading && cartItems.length > 0}}">
+  <view class="checkout-bar">
+    <!-- 全选 -->
+    <view class="select-all">
+      <checkbox-group bind:change="onSelectAll">
+        <checkbox class="select-all-checkbox" value="all" checked="{{isAllSelected}}"/>
+      </checkbox-group>
+      <text class="select-all-text">全选</text>
+    </view>
+
+    <!-- 价格信息 -->
+    <view class="price-info">
+      <view class="selected-count">已选{{selectedCount}}件</view>
+      <view class="total-price">
+        <text class="label">合计：</text>
+        <text class="currency">￥</text>
+        <text class="price">{{totalPrice}}</text>
+      </view>
+      <view class="original-price" wx:if="{{originalPrice > totalPrice}}">
+        <text class="label">原价：</text>
+        <text class="price">￥{{originalPrice}}</text>
+      </view>
+    </view>
+
+    <!-- 结算按钮 -->
+    <button 
+      class="checkout-btn {{selectedCount > 0 ? 'active' : 'disabled'}}" 
+      bind:tap="goToCheckout"
+      disabled="{{selectedCount === 0}}"
+    >
+      结算({{selectedCount}})
+    </button>
+  </view>
+</view>
+
+<!-- 删除确认弹窗 -->
+<view class="delete-modal" wx:if="{{showDeleteModal}}" bind:tap="hideDeleteModal">
+  <view class="delete-content" catch:tap="">
+    <view class="delete-title">确认删除</view>
+    <view class="delete-message">确定要删除这个商品吗？</view>
+    <view class="delete-actions">
+      <button class="cancel-btn" bind:tap="hideDeleteModal">取消</button>
+      <button class="confirm-btn" bind:tap="confirmDelete">确定</button>
+    </view>
+  </view>
+</view>
+
+<!-- 清空购物车确认弹窗 -->
+<view class="clear-modal" wx:if="{{showClearModal}}" bind:tap="hideClearModal">
+  <view class="clear-content" catch:tap="">
+    <view class="clear-title">清空购物车</view>
+    <view class="clear-message">确定要清空购物车吗？此操作不可恢复。</view>
+    <view class="clear-actions">
+      <button class="cancel-btn" bind:tap="hideClearModal">取消</button>
+      <button class="confirm-btn" bind:tap="confirmClear">确定</button>
+    </view>
+  </view>
+</view>
