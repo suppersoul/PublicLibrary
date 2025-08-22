@@ -1,0 +1,114 @@
+<!--category.wxml-->
+<view class="container">
+  <!-- 搜索栏 -->
+  <view class="search-bar">
+    <view class="search-input" bindtap="goToSearch">
+      <image class="search-icon" src="/images/icons/search.png"></image>
+      <text class="search-placeholder">搜索农产品</text>
+    </view>
+  </view>
+
+  <!-- 分类内容 -->
+  <view class="category-content">
+    <!-- 左侧分类导航 -->
+    <view class="category-nav">
+      <scroll-view scroll-y="true" class="nav-scroll">
+        <view 
+          class="nav-item {{currentCategory.id === item.id ? 'active' : ''}}" 
+          wx:for="{{categories}}" 
+          wx:key="id"
+          bindtap="selectCategory"
+          data-category="{{item}}"
+        >
+          <text class="nav-text">{{item.name}}</text>
+        </view>
+      </scroll-view>
+    </view>
+
+    <!-- 右侧商品列表 -->
+    <view class="product-content">
+      <!-- 分类信息 -->
+      <view class="category-info" wx:if="{{currentCategory}}">
+        <view class="category-header">
+          <image class="category-icon" src="/images/category/{{currentCategory.icon}}.png"></image>
+          <view class="category-details">
+            <text class="category-name">{{currentCategory.name}}</text>
+            <text class="category-desc">{{currentCategory.description}}</text>
+          </view>
+        </view>
+      </view>
+
+      <!-- 筛选栏 -->
+      <view class="filter-bar">
+        <view class="filter-item {{sortType === 'default' ? 'active' : ''}}" bindtap="setSort" data-type="default">
+          <text>综合</text>
+        </view>
+        <view class="filter-item {{sortType === 'sales' ? 'active' : ''}}" bindtap="setSort" data-type="sales">
+          <text>销量</text>
+        </view>
+        <view class="filter-item {{sortType === 'price' ? 'active' : ''}}" bindtap="setSort" data-type="price">
+          <text>价格</text>
+          <view class="price-arrows">
+            <text class="arrow {{sortType === 'price' && sortOrder === 'asc' ? 'active' : ''}}">↑</text>
+            <text class="arrow {{sortType === 'price' && sortOrder === 'desc' ? 'active' : ''}}">↓</text>
+          </view>
+        </view>
+      </view>
+
+      <!-- 商品列表 -->
+      <scroll-view 
+        scroll-y="true" 
+        class="product-scroll"
+        bindscrolltolower="loadMore"
+        refresher-enabled="{{true}}"
+        refresher-triggered="{{refreshing}}"
+        bindrefresherrefresh="onRefresh"
+      >
+        <view class="product-list">
+          <view 
+            class="product-item" 
+            wx:for="{{products}}" 
+            wx:key="id"
+            bindtap="goToProduct"
+            data-id="{{item.id}}"
+          >
+            <image class="product-image" src="{{item.images[0]}}" mode="aspectFill"></image>
+            <view class="product-info">
+              <text class="product-name">{{item.name}}</text>
+              <view class="product-price">
+                <text class="current-price">¥{{item.price}}</text>
+                <text class="original-price" wx:if="{{item.original_price > item.price}}">¥{{item.original_price}}</text>
+              </view>
+              <view class="product-meta">
+                <text class="sales-count">已售{{item.sales_count}}</text>
+                <text class="unit">{{item.unit}}</text>
+              </view>
+            </view>
+            <view class="add-cart-btn" catchtap="addToCart" data-id="{{item.id}}">
+              <image class="cart-icon" src="/images/icons/cart-add.png"></image>
+            </view>
+          </view>
+        </view>
+
+        <!-- 加载状态 -->
+        <view class="loading-status">
+          <view wx:if="{{loading}}" class="loading">
+            <text>加载中...</text>
+          </view>
+          <view wx:elif="{{!hasMore && products.length > 0}}" class="no-more">
+            <text>没有更多商品了</text>
+          </view>
+          <view wx:elif="{{products.length === 0 && !loading}}" class="empty">
+            <image class="empty-icon" src="/images/icons/empty.png"></image>
+            <text>该分类暂无商品</text>
+          </view>
+        </view>
+      </scroll-view>
+    </view>
+  </view>
+
+  <!-- 回到顶部 -->
+  <view class="back-to-top" wx:if="{{showBackToTop}}" bindtap="backToTop">
+    <image class="top-icon" src="/images/icons/top.png"></image>
+  </view>
+</view>
