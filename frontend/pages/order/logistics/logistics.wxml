@@ -1,0 +1,121 @@
+<!--物流跟踪页面-->
+<view class="logistics-container">
+  <!-- 订单信息 -->
+  <view class="order-info">
+    <view class="order-header">
+      <text class="order-title">物流跟踪</text>
+      <text class="order-no">订单号：{{orderInfo.order_no}}</text>
+    </view>
+    <view class="order-summary">
+      <view class="order-status">
+        <text class="status-label">订单状态：</text>
+        <text class="status-text {{orderInfo.status}}">{{getStatusText(orderInfo.status)}}</text>
+      </view>
+      <view class="order-amount">
+        <text class="amount-label">订单金额：</text>
+        <text class="amount-text">￥{{orderInfo.total_amount}}</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 物流信息 -->
+  <view class="logistics-section">
+    <view class="section-title">物流信息</view>
+    
+    <!-- 物流公司信息 -->
+    <view class="company-info" wx:if="{{logistics.company}}">
+      <view class="company-item">
+        <text class="label">物流公司：</text>
+        <text class="value">{{logistics.company}}</text>
+      </view>
+      <view class="company-item">
+        <text class="label">运单号：</text>
+        <text class="value">{{logistics.tracking_number}}</text>
+        <button class="copy-btn" bind:tap="copyTrackingNumber" data-number="{{logistics.tracking_number}}">
+          复制
+        </button>
+      </view>
+      <view class="company-item">
+        <text class="label">联系电话：</text>
+        <text class="value">{{logistics.phone}}</text>
+        <button class="call-btn" bind:tap="callPhone" data-phone="{{logistics.phone}}">
+          拨打
+        </button>
+      </view>
+    </view>
+
+    <!-- 物流轨迹 -->
+    <view class="tracking-timeline" wx:if="{{logistics.tracks && logistics.tracks.length > 0}}">
+      <view class="timeline-title">物流轨迹</view>
+      <view class="timeline-list">
+        <view 
+          class="timeline-item {{index === 0 ? 'latest' : ''}}" 
+          wx:for="{{logistics.tracks}}" 
+          wx:key="index"
+        >
+          <view class="timeline-dot">
+            <view class="dot {{index === 0 ? 'active' : ''}}"></view>
+          </view>
+          <view class="timeline-content">
+            <view class="track-time">{{item.time}}</view>
+            <view class="track-desc">{{item.desc}}</view>
+            <view class="track-location" wx:if="{{item.location}}">{{item.location}}</view>
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <!-- 无物流信息 -->
+    <view class="no-logistics" wx:if="{{!logistics.company}}">
+      <image class="no-image" src="/images/no-logistics.png" mode="aspectFit"/>
+      <text class="no-text">暂无物流信息</text>
+      <text class="no-desc">订单正在处理中，请耐心等待</text>
+    </view>
+  </view>
+
+  <!-- 收货地址 -->
+  <view class="address-section">
+    <view class="section-title">收货地址</view>
+    <view class="address-info">
+      <view class="address-header">
+        <text class="receiver-name">{{orderInfo.receiver_name}}</text>
+        <text class="receiver-phone">{{orderInfo.receiver_phone}}</text>
+      </view>
+      <view class="address-detail">
+        {{orderInfo.receiver_address}}
+      </view>
+    </view>
+  </view>
+
+  <!-- 商品信息 -->
+  <view class="products-section">
+    <view class="section-title">商品信息</view>
+    <view class="product-item" wx:for="{{orderInfo.items}}" wx:key="id">
+      <image class="product-image" src="{{item.product_image}}" mode="aspectFill"/>
+      <view class="product-info">
+        <view class="product-name">{{item.product_name}}</view>
+        <view class="product-spec" wx:if="{{item.spec_name}}">{{item.spec_name}}</view>
+        <view class="product-price">
+          <text class="currency">￥</text>
+          <text class="price">{{item.price}}</text>
+          <text class="quantity">×{{item.quantity}}</text>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 操作按钮 -->
+  <view class="action-section">
+    <button class="action-btn primary" bind:tap="refreshLogistics">
+      刷新物流
+    </button>
+    <button class="action-btn secondary" bind:tap="contactService">
+      联系客服
+    </button>
+  </view>
+</view>
+
+<!-- 加载状态 -->
+<view class="loading" wx:if="{{loading}}">
+  <text>加载中...</text>
+</view>
