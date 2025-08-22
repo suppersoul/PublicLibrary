@@ -1,0 +1,142 @@
+<!--用户中心页面-->
+<view class="user-container">
+  <!-- 用户信息头部 -->
+  <view class="user-header">
+    <view class="user-info" bind:tap="goToProfile">
+      <view class="avatar-section">
+        <image class="user-avatar" src="{{userInfo.avatar || '/images/default-avatar.png'}}" mode="aspectFill"/>
+        <view class="login-status" wx:if="{{!userInfo.id}}">
+          <text class="login-text">点击登录</text>
+        </view>
+      </view>
+      <view class="user-details">
+        <view class="user-name" wx:if="{{userInfo.id}}">{{userInfo.nickname || '微信用户'}}</view>
+        <view class="user-name" wx:else>未登录</view>
+        <view class="user-phone" wx:if="{{userInfo.phone}}">{{userInfo.phone}}</view>
+        <view class="user-phone" wx:else>绑定手机号享受更多服务</view>
+      </view>
+      <view class="arrow">></view>
+    </view>
+    
+    <!-- 用户统计信息 -->
+    <view class="user-stats" wx:if="{{userInfo.id}}">
+      <view class="stat-item" bind:tap="goToOrders" data-status="pending">
+        <text class="stat-number">{{stats.pending || 0}}</text>
+        <text class="stat-label">待付款</text>
+      </view>
+      <view class="stat-item" bind:tap="goToOrders" data-status="shipped">
+        <text class="stat-number">{{stats.shipped || 0}}</text>
+        <text class="stat-label">待收货</text>
+      </view>
+      <view class="stat-item" bind:tap="goToOrders" data-status="delivered">
+        <text class="stat-number">{{stats.delivered || 0}}</text>
+        <text class="stat-label">待评价</text>
+      </view>
+      <view class="stat-item" bind:tap="goToFavorites">
+        <text class="stat-number">{{stats.favorites || 0}}</text>
+        <text class="stat-label">收藏</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 订单管理 -->
+  <view class="order-section">
+    <view class="section-header" bind:tap="goToOrders">
+      <text class="section-title">我的订单</text>
+      <text class="section-subtitle">查看全部订单</text>
+      <text class="arrow">></text>
+    </view>
+    <view class="order-types">
+      <view class="order-type" bind:tap="goToOrders" data-status="pending">
+        <image class="type-icon" src="/images/order/pending.png" mode="aspectFit"/>
+        <text class="type-text">待付款</text>
+        <view class="badge" wx:if="{{stats.pending > 0}}">{{stats.pending}}</view>
+      </view>
+      <view class="order-type" bind:tap="goToOrders" data-status="paid">
+        <image class="type-icon" src="/images/order/paid.png" mode="aspectFit"/>
+        <text class="type-text">待发货</text>
+        <view class="badge" wx:if="{{stats.paid > 0}}">{{stats.paid}}</view>
+      </view>
+      <view class="order-type" bind:tap="goToOrders" data-status="shipped">
+        <image class="type-icon" src="/images/order/shipped.png" mode="aspectFit"/>
+        <text class="order-type" bind:tap="goToOrders" data-status="shipped">
+        <image class="type-icon" src="/images/order/shipped.png" mode="aspectFit"/>
+        <text class="type-text">待收货</text>
+        <view class="badge" wx:if="{{stats.shipped > 0}}">{{stats.shipped}}</view>
+      </view>
+      <view class="order-type" bind:tap="goToOrders" data-status="delivered">
+        <image class="type-icon" src="/images/order/delivered.png" mode="aspectFit"/>
+        <text class="type-text">待评价</text>
+        <view class="badge" wx:if="{{stats.delivered > 0}}">{{stats.delivered}}</view>
+      </view>
+      <view class="order-type" bind:tap="goToOrders" data-status="refund">
+        <image class="type-icon" src="/images/order/refund.png" mode="aspectFit"/>
+        <text class="type-text">退款/售后</text>
+        <view class="badge" wx:if="{{stats.refund > 0}}">{{stats.refund}}</view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 功能菜单 -->
+  <view class="menu-section">
+    <view class="menu-group">
+      <view class="menu-item" bind:tap="goToAddress">
+        <view class="menu-icon">📍</view>
+        <text class="menu-text">收货地址</text>
+        <text class="arrow">></text>
+      </view>
+      <view class="menu-item" bind:tap="goToFavorites">
+        <view class="menu-icon">❤️</view>
+        <text class="menu-text">我的收藏</text>
+        <text class="arrow">></text>
+      </view>
+      <view class="menu-item" bind:tap="goToCoupons">
+        <view class="menu-icon">🎫</view>
+        <text class="menu-text">优惠券</text>
+        <text class="arrow">></text>
+      </view>
+    </view>
+
+    <view class="menu-group">
+      <view class="menu-item" bind:tap="goToCustomerService">
+        <view class="menu-icon">💬</view>
+        <text class="menu-text">联系客服</text>
+        <text class="arrow">></text>
+      </view>
+      <view class="menu-item" bind:tap="goToFeedback">
+        <view class="menu-icon">📝</view>
+        <text class="menu-text">意见反馈</text>
+        <text class="arrow">></text>
+      </view>
+      <view class="menu-item" bind:tap="goToAbout">
+        <view class="menu-icon">ℹ️</view>
+        <text class="menu-text">关于我们</text>
+        <text class="arrow">></text>
+      </view>
+    </view>
+
+    <view class="menu-group">
+      <view class="menu-item" bind:tap="goToSettings">
+        <view class="menu-icon">⚙️</view>
+        <text class="menu-text">设置</text>
+        <text class="arrow">></text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 退出登录 -->
+  <view class="logout-section" wx:if="{{userInfo.id}}">
+    <button class="logout-btn" bind:tap="logout">退出登录</button>
+  </view>
+
+  <!-- 未登录提示 -->
+  <view class="login-prompt" wx:if="{{!userInfo.id}}">
+    <text class="prompt-text">登录后享受更多服务</text>
+    <button class="login-btn" bind:tap="goToLogin">立即登录</button>
+  </view>
+</view>
+
+<!-- 加载状态 -->
+<view class="loading" wx:if="{{loading}}">
+  <text>加载中...</text>
+</view>

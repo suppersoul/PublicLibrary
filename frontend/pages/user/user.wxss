@@ -1,0 +1,275 @@
+/* pages/user/user.wxss */
+
+.user-container {
+  background: #f5f5f5;
+  min-height: 100vh;
+}
+
+/* 用户信息头部 */
+.user-header {
+  background: linear-gradient(135deg, #ff6b35 0%, #ffa366 100%);
+  padding: 40rpx 30rpx 60rpx;
+  color: white;
+  position: relative;
+}
+
+.user-header::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 40rpx;
+  background: #f5f5f5;
+  border-radius: 40rpx 40rpx 0 0;
+}
+
+.user-info {
+  display: flex;
+  align-items: center;
+  margin-bottom: 40rpx;
+}
+
+.avatar-section {
+  position: relative;
+  margin-right: 30rpx;
+}
+
+.user-avatar {
+  width: 120rpx;
+  height: 120rpx;
+  border-radius: 50%;
+  border: 4rpx solid rgba(255, 255, 255, 0.3);
+}
+
+.login-status {
+  position: absolute;
+  bottom: -10rpx;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(255, 255, 255, 0.2);
+  padding: 8rpx 16rpx;
+  border-radius: 20rpx;
+  font-size: 22rpx;
+}
+
+.user-details {
+  flex: 1;
+}
+
+.user-name {
+  font-size: 36rpx;
+  font-weight: bold;
+  margin-bottom: 12rpx;
+}
+
+.user-phone {
+  font-size: 26rpx;
+  opacity: 0.9;
+}
+
+.arrow {
+  font-size: 24rpx;
+  opacity: 0.7;
+}
+
+/* 用户统计信息 */
+.user-stats {
+  display: flex;
+  justify-content: space-around;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 20rpx;
+  padding: 30rpx 20rpx;
+}
+
+.stat-item {
+  text-align: center;
+  flex: 1;
+}
+
+.stat-number {
+  display: block;
+  font-size: 36rpx;
+  font-weight: bold;
+  margin-bottom: 8rpx;
+}
+
+.stat-label {
+  font-size: 24rpx;
+  opacity: 0.9;
+}
+
+/* 订单管理 */
+.order-section {
+  background: white;
+  margin: 20rpx;
+  border-radius: 16rpx;
+  overflow: hidden;
+  box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.1);
+}
+
+.section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 30rpx;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.section-title {
+  font-size: 32rpx;
+  font-weight: bold;
+  color: #333;
+}
+
+.section-subtitle {
+  font-size: 26rpx;
+  color: #666;
+  margin-left: 20rpx;
+}
+
+.order-types {
+  display: flex;
+  padding: 30rpx 20rpx;
+}
+
+.order-type {
+  flex: 1;
+  text-align: center;
+  position: relative;
+}
+
+.type-icon {
+  width: 60rpx;
+  height: 60rpx;
+  margin: 0 auto 16rpx;
+}
+
+.type-text {
+  font-size: 24rpx;
+  color: #666;
+  display: block;
+}
+
+.badge {
+  position: absolute;
+  top: -10rpx;
+  right: 20rpx;
+  background: #ff6b35;
+  color: white;
+  font-size: 20rpx;
+  min-width: 32rpx;
+  height: 32rpx;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 8rpx;
+}
+
+/* 功能菜单 */
+.menu-section {
+  margin: 20rpx;
+}
+
+.menu-group {
+  background: white;
+  border-radius: 16rpx;
+  margin-bottom: 20rpx;
+  overflow: hidden;
+  box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.1);
+}
+
+.menu-item {
+  display: flex;
+  align-items: center;
+  padding: 30rpx;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.menu-item:last-child {
+  border-bottom: none;
+}
+
+.menu-icon {
+  font-size: 36rpx;
+  margin-right: 20rpx;
+  width: 40rpx;
+  text-align: center;
+}
+
+.menu-text {
+  flex: 1;
+  font-size: 28rpx;
+  color: #333;
+}
+
+/* 退出登录 */
+.logout-section {
+  margin: 40rpx 20rpx;
+}
+
+.logout-btn {
+  width: 100%;
+  height: 88rpx;
+  background: white;
+  color: #ff6b35;
+  border: 2rpx solid #ff6b35;
+  border-radius: 44rpx;
+  font-size: 28rpx;
+  font-weight: bold;
+}
+
+/* 未登录提示 */
+.login-prompt {
+  text-align: center;
+  padding: 60rpx 40rpx;
+}
+
+.prompt-text {
+  display: block;
+  font-size: 28rpx;
+  color: #666;
+  margin-bottom: 40rpx;
+}
+
+.login-btn {
+  width: 300rpx;
+  height: 80rpx;
+  background: #ff6b35;
+  color: white;
+  border: none;
+  border-radius: 40rpx;
+  font-size: 28rpx;
+  font-weight: bold;
+}
+
+/* 加载状态 */
+.loading {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 60vh;
+  font-size: 28rpx;
+  color: #666;
+}
+
+/* 响应式调整 */
+@media screen and (max-width: 400px) {
+  .user-header {
+    padding: 30rpx 20rpx 50rpx;
+  }
+  
+  .user-avatar {
+    width: 100rpx;
+    height: 100rpx;
+  }
+  
+  .user-name {
+    font-size: 32rpx;
+  }
+  
+  .stat-number {
+    font-size: 32rpx;
+  }
+}

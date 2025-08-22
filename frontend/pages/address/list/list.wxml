@@ -1,0 +1,67 @@
+<!--地址列表页面-->
+<view class="address-container">
+  <!-- 地址列表 -->
+  <view class="address-list" wx:if="{{!loading && addresses.length > 0}}">
+    <view class="address-item" wx:for="{{addresses}}" wx:key="id">
+      <!-- 地址信息 -->
+      <view class="address-info" bind:tap="selectAddress" data-address="{{item}}">
+        <view class="address-header">
+          <text class="receiver-name">{{item.receiver_name}}</text>
+          <text class="receiver-phone">{{item.receiver_phone}}</text>
+          <view class="default-tag" wx:if="{{item.is_default}}">默认</view>
+        </view>
+        <view class="address-detail">
+          {{item.province}} {{item.city}} {{item.district}} {{item.detail}}
+        </view>
+      </view>
+      
+      <!-- 操作按钮 -->
+      <view class="address-actions">
+        <view class="action-btn" bind:tap="setDefault" data-id="{{item.id}}" wx:if="{{!item.is_default}}">
+          <text class="action-icon">⭐</text>
+          <text class="action-text">设为默认</text>
+        </view>
+        <view class="action-btn" bind:tap="editAddress" data-id="{{item.id}}">
+          <text class="action-icon">✏️</text>
+          <text class="action-text">编辑</text>
+        </view>
+        <view class="action-btn" bind:tap="deleteAddress" data-id="{{item.id}}">
+          <text class="action-icon">🗑️</text>
+          <text class="action-text">删除</text>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 空状态 -->
+  <view class="empty-state" wx:if="{{!loading && addresses.length === 0}}">
+    <image class="empty-image" src="/images/empty-address.png" mode="aspectFit"/>
+    <text class="empty-text">暂无收货地址</text>
+    <text class="empty-desc">添加收货地址，享受便捷购物</text>
+  </view>
+
+  <!-- 加载状态 -->
+  <view class="loading" wx:if="{{loading}}">
+    <text>加载中...</text>
+  </view>
+</view>
+
+<!-- 底部添加按钮 -->
+<view class="bottom-bar">
+  <button class="add-address-btn" bind:tap="addAddress">
+    <text class="add-icon">+</text>
+    <text class="add-text">新增收货地址</text>
+  </button>
+</view>
+
+<!-- 删除确认弹窗 -->
+<view class="delete-modal" wx:if="{{showDeleteModal}}" bind:tap="hideDeleteModal">
+  <view class="delete-content" catch:tap="">
+    <view class="delete-title">确认删除</view>
+    <view class="delete-message">确定要删除这个收货地址吗？</view>
+    <view class="delete-actions">
+      <button class="cancel-btn" bind:tap="hideDeleteModal">取消</button>
+      <button class="confirm-btn" bind:tap="confirmDelete">确定</button>
+    </view>
+  </view>
+</view>
